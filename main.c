@@ -21,17 +21,17 @@ OpenFileFatStatus_t CloseFileFat();
 int main() {
 	//fileptr = fopen("floppy.img", "r");
 	uint8_t exit = 1;
-	StatusReadBoot_t statusreadboot;
+	uint32_t rootBlockStartOffset = 0;
 	OpenFileFatStatus_t OpenFileStatus; 
+	StatusReadBoot_t statusreadboot;
 	OpenFileStatus = OpenFileFat(); 
 	switch (OpenFileStatus) {
 		case OPEN_SUCCESS: 
 			//Read Root Block
 			statusreadboot = ReadBoot(&bootblock);
+			rootBlockStartOffset = bootblock.num_fat * bootblock.blocks_per_fat * bootblock.bytes_per_block + bootblock.bytes_per_block;
 			switch (statusreadboot) {
-				case READBOOT_SUCCESS:
-					printBootBlock(&bootblock);		
-					// Print Root Directory 
+				case READBOOT_SUCCESS:							
 					//
 						DisplayData(0x003);
 					//
@@ -46,6 +46,7 @@ int main() {
 			printf("OPEN FAIL \n");
 			break;
 	}
+	
 	return 0;
 }
 
